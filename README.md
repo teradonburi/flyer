@@ -1,4 +1,4 @@
-# mock
+# flyer
 
 ```
 $ yarn
