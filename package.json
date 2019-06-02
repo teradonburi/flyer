@@ -4,10 +4,15 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
+    "dom-to-image": "^2.6.0",
     "eslint": "^5.16.0",
     "eslint-plugin-react": "^7.13.0",
     "parcel": "^1.12.3",
     "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react-dnd": "^7.4.5",
+    "react-dnd-html5-backend": "^7.4.4",
+    "react-dom": "^16.8.6",
+    "react-rnd": "^9.1.2",
+    "uuid": "^3.3.2"
   }
 }

@@ -1,0 +1,30 @@
+
+@font-face {
+  font-family: 'HachiGoIchi';
+  font-display: swap;
+  src: url('./font/851Gkktt_004.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'karakaze';
+  font-display: swap;
+  src: url('./font/karakaze-M.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'voynich';
+  font-display: swap;
+  src: url('./font/Voynich_MonoSpace.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'APJapanesefont';
+  font-display: swap;
+  src: url('./font/APJapanesefont.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Kosugi';
+  font-display: swap;
+  src: url('./font/Kosugi-Regular.ttf') format('truetype');
+}
