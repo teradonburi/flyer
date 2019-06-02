@@ -5,7 +5,6 @@ import uuidv4 from 'uuid/v4'
 import { Rnd } from 'react-rnd'
 import DragDropContainer from './DragDropContainer'
 import noimage from './img/noimage.png'
-import './font.css'
 
 const fonts = [
   {type: '', name: '未選択'},
@@ -220,6 +219,20 @@ export default class App extends React.Component {
 
     return (
       <div style={styles.root} >
+        <style dangerouslySetInnerHTML={`
+@font-face {
+  font-family: 'APJapanesefont';
+  font-display: swap;
+  src: url('./font/APJapanesefont.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Kosugi';
+  font-display: swap;
+  src: url('./font/Kosugi-Regular.ttf') format('truetype');
+}
+        `}>
+        </style>
         <div style={styles.container}>
           <DragDropContainer
             items={[
