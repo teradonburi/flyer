@@ -47,7 +47,7 @@ DragItem = DragSource(
 )(DragItem)
 
 
-const DragDropContainer = ({children, zoneStyle, zoneActiveStyle, itemStyles, itemStyle, itemDraggingStyle, onDrop, items = []}) => (
+const DragDropContainer = ({children, zoneStyle, zoneActiveStyle, itemStyles, itemStyle, itemDraggingStyle, onDrop, items = [], extras}) => (
   <>
     <DropZone style={zoneStyle} activeStyle={zoneActiveStyle}>
       {children}
@@ -62,6 +62,7 @@ const DragDropContainer = ({children, zoneStyle, zoneActiveStyle, itemStyles, it
           onDrop={onDrop}
         />
       )}
+      {extras}
     </div>
   </>
 )

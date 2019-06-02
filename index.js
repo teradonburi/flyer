@@ -3,10 +3,15 @@ import ReactDOM from 'react-dom'
 import domtoimage from 'dom-to-image'
 import uuidv4 from 'uuid/v4'
 import { Rnd } from 'react-rnd'
-import './font.css'
 import DragDropContainer from './DragDropContainer'
-
 import noimage from './img/noimage.png'
+import './font.css'
+
+const fonts = [
+  {type: '', name: '未選択'},
+  {type: 'APJapanesefont', name: 'あんず文字'},
+  {type: 'Kosugi', name: '小杉フォント'},
+]
 
 export default class App extends React.Component {
 
@@ -23,7 +28,6 @@ export default class App extends React.Component {
     }
     this.rnds = {}
 
-    this.onKeyDown = this.onKeyDown.bind(this)
     this.onAddItem = this.onAddItem.bind(this)
     this.onDragStart = this.onDragStart.bind(this)
     this.onDrag = this.onDrag.bind(this)
@@ -33,29 +37,13 @@ export default class App extends React.Component {
     this.onUpdateSize = this.onUpdateSize.bind(this)
     this.onUpdateStyle = this.onUpdateStyle.bind(this)
     this.onUpdateAttr = this.onUpdateAttr.bind(this)
+    this.onDelete = this.onDelete.bind(this)
+    this.onChangeBackgroundColor = this.onChangeBackgroundColor.bind(this)
+    this.onLoadBackgroundFile = this.onLoadBackgroundFile.bind(this)
     this.onCapture = this.onCapture.bind(this)
     this.onDownload = this.onDownload.bind(this)
   }
 
-  componentDidMount() {
-    document.body.addEventListener('keydown', this.onKeyDown)
-  }
-
-  componentWillUnmount() {
-    document.body.removeEventListener('keydown', this.onKeyDown)
-  }
-
-  onKeyDown(e) {
-    // delete
-    if (e.keyCode === 8) {
-      const { element } = this.state
-      if (element) {
-        const items = this.state.items
-        delete items[element.id]
-        this.setState({element: null, items, x: 0, y: 0, width: 0, height: 0})
-      }
-    }
-  }
 
   onAddItem(item, dropResult) {
     if (item.name === 'テキスト') {
@@ -64,7 +52,7 @@ export default class App extends React.Component {
         type: 'text',
         zIndex: 0,
         text: 'ドラッグで移動',
-        default: {x: dropResult.clientOffset.x - 50, y: dropResult.clientOffset.y - 20},
+        default: {x: dropResult.clientOffset.x - 50, y: dropResult.clientOffset.y - 20,  width: 120, height: 26},
         component: (id, text) => <div id={id} style={{width: '100%', height: '100%', border: (this.state.element || {}).id === id ? '1px dotted black' : 'none'}}>{text}</div>,
       }
       const items = this.state.items
@@ -76,7 +64,7 @@ export default class App extends React.Component {
         type: 'image',
         zIndex: 0,
         src: noimage,
-        default: {x: dropResult.clientOffset.x - 50, y: dropResult.clientOffset.y - 20},
+        default: {x: dropResult.clientOffset.x - 50, y: dropResult.clientOffset.y - 20, width: 128, height: 128},
         component: (id, src) => <img id={id} draggable='false' src={src} style={{display: 'block', width: '100%', height: '100%', border: (this.state.element || {}).id === id ? '1px dotted black' : 'none'}} />,
       }
       const items = this.state.items
@@ -135,6 +123,31 @@ export default class App extends React.Component {
     this.setState({element})
   }
 
+  onDelete() {
+    // delete
+    const { element } = this.state
+    if (element) {
+      const items = this.state.items
+      delete items[element.id]
+      this.setState({element: null, items, x: 0, y: 0, width: 0, height: 0})
+    }
+  }
+
+  onChangeBackgroundColor(e) {
+    const color = e.target.value
+    this.setState({backgroundColor: color})
+  }
+
+  onLoadBackgroundFile(e) {
+    var file = e.target.files
+    var reader = new FileReader()
+    reader.readAsDataURL(file[0])
+    reader.onload = () => {
+      const dataUrl = reader.result
+      this.setState({backgroundImage: dataUrl})
+    }
+  }
+
   onCapture() {
     this.setState({element: null})
     const node = document.getElementById('node')
@@ -179,17 +192,20 @@ export default class App extends React.Component {
   }
 
   render () {
-    const { items, element, imageUrl, x, y, width, height } = this.state
+    const { items, element, imageUrl, x, y, width, height, backgroundColor, backgroundImage } = this.state
 
     const styles = {
       root: {
         padding: 10,
       },
       board: {
-        width: 400,
-        height: 300,
-        padding: 10,
+        width: 750,
+        height: 562,
         border: '1px solid black',
+        backgroundColor,
+        backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
       },
       container: {
         display: 'flex',
@@ -212,6 +228,25 @@ export default class App extends React.Component {
             ]}
             itemStyle={styles.itemStyle}
             onDrop={(item, dropResult) => this.onAddItem(item, dropResult)}
+            extras={
+              <div style={{margin: 10}}>
+                {element &&
+                  <StyleController
+                    element={element}
+                    x={x}
+                    y={y}
+                    width={width}
+                    height={height}
+                    item={items[element.id]}
+                    onUpdatePos={this.onUpdatePos}
+                    onUpdateSize={this.onUpdateSize}
+                    onUpdateStyle={this.onUpdateStyle}
+                    onUpdateAttr={this.onUpdateAttr}
+                    onDelete={this.onDelete}
+                  />
+                }
+              </div>
+            }
           >
             <section id='node'>
               <div style={styles.board}>
@@ -221,7 +256,7 @@ export default class App extends React.Component {
                     style={{zIndex: item.zIndex}}
                     ref={rnd => this.rnds[item.id] = rnd}
                     bounds='parent'
-                    default={{x: item.default.x, y: item.default.y}}
+                    default={{x: item.default.x, y: item.default.y, width: item.default.width, height: item.default.height}}
                     onDragStart={this.onDragStart}
                     onDrag={this.onDrag}
                     onResizeStart={this.onResizeStart}
@@ -234,20 +269,12 @@ export default class App extends React.Component {
             </section>
           </DragDropContainer>
         </div>
-        {element &&
-          <StyleController
-            element={element}
-            x={x}
-            y={y}
-            width={width}
-            height={height}
-            item={items[element.id]}
-            onUpdatePos={this.onUpdatePos}
-            onUpdateSize={this.onUpdateSize}
-            onUpdateStyle={this.onUpdateStyle}
-            onUpdateAttr={this.onUpdateAttr}
-          />
-        }
+        <div>
+          背景
+          <input type='color' onChange={this.onChangeBackgroundColor} />
+          or
+          <input type='file' accept='image/*' onChange={this.onLoadBackgroundFile} />
+        </div>
         <div>
           <button onClick={this.onCapture}>画像作成</button>
           {!element && imageUrl &&
@@ -694,20 +721,11 @@ class StyleController extends React.Component {
             </div>
           </>
         }
+        <button style={{background: '#ff0000', color: '#ffffff'}} onClick={() => this.props.onDelete()}>削除</button>
       </div>
     )
   }
 }
-
-
-const fonts = [
-  {type: '', name: '未選択'},
-  {type: 'HachiGoIchi', name: '８５１ゴチガクット'},
-  {type: 'karakaze', name: 'からかぜ'},
-  {type: 'voynich', name: 'ヴォイニッチ等幅'},
-  {type: 'APJapanesefont', name: 'あんず文字'},
-  {type: 'Kosugi', name: '小杉フォント'},
-]
 
 ReactDOM.render(
   <App />,
