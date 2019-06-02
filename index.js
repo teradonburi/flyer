@@ -219,7 +219,7 @@ export default class App extends React.Component {
 
     return (
       <div style={styles.root} >
-        <style dangerouslySetInnerHTML={`
+        <style dangerouslySetInnerHTML={{__html: `
 @font-face {
   font-family: 'APJapanesefont';
   font-display: swap;
@@ -231,7 +231,7 @@ export default class App extends React.Component {
   font-display: swap;
   src: url('./font/Kosugi-Regular.ttf') format('truetype');
 }
-        `}>
+        `}}>
         </style>
         <div style={styles.container}>
           <DragDropContainer
@@ -284,7 +284,7 @@ export default class App extends React.Component {
         </div>
         <div>
           背景
-          <input type='color' onChange={this.onChangeBackgroundColor} />
+          <input type='color' value={backgroundColor || '#ffffff'} onChange={this.onChangeBackgroundColor} />
           or
           <input type='file' accept='image/*' onChange={this.onLoadBackgroundFile} />
         </div>
@@ -454,14 +454,14 @@ class StyleController extends React.Component {
     const rotateY = parseInt((/\d+/.exec((element.style.transform.match(/rotateY\(\d+deg\)/) || [])[0]) || [])[0]) || 0
     const rotateZ = parseInt((/\d+/.exec((element.style.transform.match(/rotateZ\(\d+deg\)/) || [])[0]) || [])[0]) || 0
 
-    let color = element.style.color
-    let backgroundColor = element.style.backgroundColor
+    let color = element.style.color || '#000000'
+    let backgroundColor = element.style.backgroundColor || '#ffffff'
     if (item.type === 'text') {
-      const rgbColor = ((element.style.color.match(/\d+,.*\d+,.*\d+/) || [])[0] || '').split(',').map(c => parseInt(c.trim()))
+      const rgbColor = ((element.style.color.match(/\d+,\s*\d+,\s*\d+/) || [])[0] || '').split(',').map(c => parseInt(c.trim()))
       if (rgbColor.length === 3) {
         color = '#' + rgbColor.map(value => ('0' + value.toString(16)).slice(-2)).join('')
       }
-      const rgbBgColor = ((element.style.backgroundColor.match(/\d+,.*\d+,.*\d+/) || [])[0] || '').split(',').map(c => parseInt(c.trim()))
+      const rgbBgColor = ((element.style.backgroundColor.match(/\d+,\s*\d+,\s*\d+/) || [])[0] || '').split(',').map(c => parseInt(c.trim()))
       if (rgbBgColor.length === 3) {
         backgroundColor = '#' + rgbBgColor.map(value => ('0' + value.toString(16)).slice(-2)).join('')
       }
