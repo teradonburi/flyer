@@ -457,11 +457,11 @@ class StyleController extends React.Component {
     let color = element.style.color
     let backgroundColor = element.style.backgroundColor
     if (item.type === 'text') {
-      const rgbColor = ((element.style.color.match(/\d+,\s*\d+,\s*\d+/) || [])[0] || '').split(',').map(c => parseInt(c.trim()))
+      const rgbColor = ((element.style.color.match(/\d+,.*\d+,.*\d+/) || [])[0] || '').split(',').map(c => parseInt(c.trim()))
       if (rgbColor.length === 3) {
         color = '#' + rgbColor.map(value => ('0' + value.toString(16)).slice(-2)).join('')
       }
-      const rgbBgColor = ((element.style.backgroundColor.match(/\d+,\s*\d+,\s*\d+/) || [])[0] || '').split(',').map(c => parseInt(c.trim()))
+      const rgbBgColor = ((element.style.backgroundColor.match(/\d+,.*\d+,.*\d+/) || [])[0] || '').split(',').map(c => parseInt(c.trim()))
       if (rgbBgColor.length === 3) {
         backgroundColor = '#' + rgbBgColor.map(value => ('0' + value.toString(16)).slice(-2)).join('')
       }
