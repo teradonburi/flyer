@@ -1,0 +1,11 @@
+@font-face {
+  font-family: 'APJapanesefont';
+  font-display: swap;
+  src: url('./font/APJapanesefont.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Kosugi';
+  font-display: swap;
+  src: url('./font/Kosugi-Regular.ttf') format('truetype');
+}
